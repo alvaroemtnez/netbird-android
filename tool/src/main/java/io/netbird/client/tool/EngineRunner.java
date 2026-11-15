@@ -8,6 +8,7 @@ import android.util.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -148,7 +149,9 @@ class EngineRunner {
         Runnable r = () -> {
             DNSWatch dnsWatch = new DNSWatch(context);
 
-            var envList = EnvVarPackager.getEnvironmentVariables(preferences);
+            File externalFilesDir = context.getExternalFilesDir(null);
+            var envList = EnvVarPackager.getEnvironmentVariables(preferences,
+                    externalFilesDir == null ? null : new File(externalFilesDir, EnvVarPackager.OVERRIDES_FILE_NAME));
 
             // Initialize engine with current active profile
             // Get paths from Go ProfileManager instead of constructing them in Java
